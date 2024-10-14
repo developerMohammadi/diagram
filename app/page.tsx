@@ -22,7 +22,7 @@ const initialEdges: Edge[] = [
     { id: 'e2-3', source: '2', target: '3', type: 'smoothstep', style: { strokeDasharray: '5,5' } },
 ];
 
-export default function Home() {
+export default function Diagram() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialCompanyData.map((company, index) => ({
         id: (index + 1).toString(),
         type: 'default',
@@ -40,13 +40,14 @@ export default function Home() {
 
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-
     const [name, setName] = useState('');
     const [years, setYears] = useState('');
     const [employees, setEmployees] = useState('');
 
+    const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
     const onConnect = useCallback(
-        (params: Edge | Connection) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep', style: { strokeDasharray: '5,5' } }, eds)),
+        (params: Edge | Connection) => setEdges((eds) => addEdge({ ...params, type: 'bezier' }, eds)),
         [setEdges]
     );
 
@@ -74,6 +75,13 @@ export default function Home() {
         }
     };
 
+    const deleteNode = () => {
+        if (selectedNodeId) {
+            setNodes((nds) => nds.filter((node) => node.id !== selectedNodeId));
+            setSelectedNodeId(null);
+        }
+    };
+
     return (
         <div style={{ height: '100vh' }}>
             <div style={{ marginBottom: '10px' }}>
@@ -96,6 +104,9 @@ export default function Home() {
                     onChange={(e) => setEmployees(e.target.value)}
                 />
                 <button onClick={addNode}>Add Company</button>
+                <div>
+                    <button onClick={deleteNode} disabled={!selectedNodeId}>Delete Selected Company</button>
+                </div>
             </div>
 
             <ReactFlow
@@ -105,6 +116,9 @@ export default function Home() {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 fitView
+                onNodeClick={(event, node) => {
+                    setSelectedNodeId(node.id);
+                }}
             >
                 <Controls />
                 <Background color="#aaa" gap={16} />
