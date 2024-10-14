@@ -69,6 +69,7 @@ export default function Diagram() {
             };
 
             setNodes((nds) => nds.concat(newNode));
+
             setName('');
             setYears('');
             setEmployees('');
@@ -104,6 +105,7 @@ export default function Diagram() {
                     onChange={(e) => setEmployees(e.target.value)}
                 />
                 <button onClick={addNode}>Add Company</button>
+
                 <div>
                     <button onClick={deleteNode} disabled={!selectedNodeId}>Delete Selected Company</button>
                 </div>
