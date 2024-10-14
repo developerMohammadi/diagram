@@ -1,15 +1,12 @@
 'use client'
 import { useState } from 'react';
 import ReactFlow, {
-    Elements,
+    Node,
+    Edge,
     Controls,
     Background,
-    Handle,
-    addEdge,
-    Connection,
-    Edge,
-    Node,
     Position,
+    addEdge,
 } from 'react-flow-renderer';
 
 interface DepartmentNode extends Node {
@@ -26,23 +23,27 @@ interface DepartmentEdge extends Edge {
     animated: boolean;
 }
 
-const initialElements: (DepartmentNode | DepartmentEdge)[] = [
+const initialNodes: DepartmentNode[] = [
     { id: '1', type: 'input', data: { label: 'Company' }, position: { x: 250, y: 5 } },
     { id: '2', data: { label: 'Department 1' }, position: { x: 100, y: 100 } },
     { id: '3', data: { label: 'Department 2' }, position: { x: 400, y: 100 } },
+];
+
+const initialEdges: DepartmentEdge[] = [
     { id: 'e1-2', source: '1', target: '2', type: 'smoothstep', animated: true },
     { id: 'e1-3', source: '1', target: '3', type: 'smoothstep', animated: true },
 ];
 
 export default function Home() {
-    const [elements, setElements] = useState<(DepartmentNode | DepartmentEdge)[]>(initialElements);
+    const [nodes, setNodes] = useState<DepartmentNode[]>(initialNodes);
+    const [edges, setEdges] = useState<DepartmentEdge[]>(initialEdges);
 
     const onElementClick = (event: React.MouseEvent, element: DepartmentNode | DepartmentEdge) => {
         console.log('Clicked element:', element);
     };
 
     const addDepartment = () => {
-        const newId = (elements.length + 1).toString();
+        const newId = (nodes.length + 1).toString();
         const newDepartment: DepartmentNode = {
             id: newId,
             data: { label: `Department ${newId}` },
@@ -55,12 +56,18 @@ export default function Home() {
             type: 'smoothstep',
             animated: true,
         };
-        setElements((els) => [...els, newDepartment, newConnection]);
+        setNodes((nds) => [...nds, newDepartment]);
+        setEdges((eds) => [...eds, newConnection]);
     };
 
     return (
         <div style={{ height: '100vh' }}>
-            <ReactFlow elements={elements} onElementClick={onElementClick}>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodeClick={onElementClick}
+                onEdgeClick={onElementClick}
+            >
                 <Controls />
                 <Background color="#aaa" gap={16} />
             </ReactFlow>
