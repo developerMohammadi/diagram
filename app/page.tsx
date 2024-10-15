@@ -10,6 +10,7 @@ import ReactFlow, {
     useEdgesState,
     useNodesState,
 } from 'react-flow-renderer';
+import {Button, Input} from "@nextui-org/react";
 
 const initialCompanyData = [
     { name: 'FakeCorp', years: 10, employees: 200 },
@@ -86,28 +87,28 @@ export default function Diagram() {
     return (
         <div style={{ height: '100vh' }}>
             <div style={{ marginBottom: '10px' }}>
-                <input
+                <Input
                     type="text"
                     placeholder="Company Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <input
+                <Input
                     type="number"
                     placeholder="Years of Experience"
                     value={years}
                     onChange={(e) => setYears(e.target.value)}
                 />
-                <input
+                <Input
                     type="number"
                     placeholder="Number of Employees"
                     value={employees}
                     onChange={(e) => setEmployees(e.target.value)}
                 />
-                <button onClick={addNode}>Add Company</button>
+                <Button color={'primary'} onClick={addNode}>Add Company</Button>
 
                 <div>
-                    <button onClick={deleteNode} disabled={!selectedNodeId}>Delete Selected Company</button>
+                    <Button  onClick={deleteNode} disabled={!selectedNodeId}>Delete Selected Company</Button>
                 </div>
             </div>
 
