@@ -30,4 +30,4 @@ To run this application locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/company-diagram-app.git
+    https://github.com/developerMohammadi/diagram.git
