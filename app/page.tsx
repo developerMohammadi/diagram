@@ -12,6 +12,7 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 import {Button, Input} from "@nextui-org/react";
 
+
 const initialCompanyData = [
     { name: 'FakeCorp', years: 10, employees: 200 },
     { name: 'Techify', years: 5, employees: 80 },
@@ -83,32 +84,35 @@ export default function Diagram() {
             setSelectedNodeId(null);
         }
     };
-
     return (
-        <div style={{ height: '100vh' }}>
-            <div style={{ marginBottom: '10px' }}>
-                <Input
-                    type="text"
-                    placeholder="Company Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <Input
-                    type="number"
-                    placeholder="Years of Experience"
-                    value={years}
-                    onChange={(e) => setYears(e.target.value)}
-                />
-                <Input
-                    type="number"
-                    placeholder="Number of Employees"
-                    value={employees}
-                    onChange={(e) => setEmployees(e.target.value)}
-                />
-                <Button color={'primary'} onClick={addNode}>Add Company</Button>
+        <div className={'h-screen p-4 '}>
+            <div className={'w-full bg-[#99AABB]'}>
+                <div className={'mb-4 w-96 h-72 flex flex-col gap-2.5  justify-center pl-3'}>
+                    <Input
+                        className={'w-full'}
+                        type="text"
+                        placeholder="Company Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <Input
+                        type="number"
+                        placeholder="Years of Experience"
+                        value={years}
+                        onChange={(e) => setYears(e.target.value)}
+                    />
+                    <Input
+                        type="number"
+                        placeholder="Number of Employees"
+                        value={employees}
+                        onChange={(e) => setEmployees(e.target.value)}
+                    />
+                    <Button color={'primary'} onClick={addNode}>Add Company</Button>
 
-                <div>
-                    <Button  onClick={deleteNode} disabled={!selectedNodeId}>Delete Selected Company</Button>
+                    <div>
+                        <Button className={'w-full'} color={'danger'} onClick={deleteNode} disabled={!selectedNodeId}>Delete
+                            Selected Company</Button>
+                    </div>
                 </div>
             </div>
 
@@ -123,8 +127,8 @@ export default function Diagram() {
                     setSelectedNodeId(node.id);
                 }}
             >
-                <Controls />
-                <Background color="#aaa" gap={16} />
+                <Controls/>
+                <Background color="#99AABB" gap={16}/>
             </ReactFlow>
         </div>
     );
