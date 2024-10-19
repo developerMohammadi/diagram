@@ -10,20 +10,27 @@ import ReactFlow, {
     useEdgesState,
     useNodesState,
 } from 'react-flow-renderer';
-import {Button, Input} from "@nextui-org/react";
-
-const initialCompanyData = [
-    { name: 'FakeCorp', years: 10, employees: 200 },
-    { name: 'Techify', years: 5, employees: 80 },
-    { name: 'InnovateX', years: 15, employees: 350 },
-];
+import {Button, useDisclosure} from "@nextui-org/react";
+import { deleteNode, isNodeSelected } from '@/app/nodeDelete.service';
+import { initialCompanyData } from "@/app/data";
+import AddModal from "./add.modal";
 
 const initialEdges: Edge[] = [
     { id: 'e1-2', source: '1', target: '2', type: 'smoothstep', style: { strokeDasharray: '5,5' } },
     { id: 'e2-3', source: '2', target: '3', type: 'smoothstep', style: { strokeDasharray: '5,5' } },
 ];
 
+export interface CardProps {
+    name?: string;
+    years?: string;
+    employees?: string;
+}
+
 export default function Diagram() {
+
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+
     const [nodes, setNodes, onNodesChange] = useNodesState(initialCompanyData.map((company, index) => ({
         id: (index + 1).toString(),
         type: 'default',
@@ -40,76 +47,51 @@ export default function Diagram() {
     })));
 
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-    const [name, setName] = useState('');
-    const [years, setYears] = useState('');
-    const [employees, setEmployees] = useState('');
-
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
 
     const onConnect = useCallback(
         (params: Edge | Connection) => setEdges((eds) => addEdge({ ...params, type: 'bezier' }, eds)),
         [setEdges]
     );
 
-    const addNode = () => {
-        if (name && years && employees) {
-            const newNode: Node = {
-                id: (nodes.length + 1).toString(),
-                type: 'default',
-                data: {
-                    label: (
-                        <div>
-                            <strong>{name}</strong>
-                            <div>Years of Experience: {years}</div>
-                            <div>Employees: {employees}</div>
-                        </div>
-                    ),
-                },
-                position: { x: 150 * (nodes.length + 1), y: 150 },
-            };
+    const handleAddCompany = (items:CardProps) => {
+        const newNode: Node = {
+            id: (nodes.length + 1).toString(),
+            type: 'default',
+            data: {
+                label: (
+                    <div>
+                        <strong>{items.name}</strong>
+                        <div>Years of Experience: {items.years}</div>
+                        <div>Employees: {items.employees}</div>
+                    </div>
+                ),
+            },
+            position: { x: 150 * (nodes.length + 1), y: 150 },
+        };
 
-            setNodes((nds) => nds.concat(newNode));
-
-            setName('');
-            setYears('');
-            setEmployees('');
-        }
+        setNodes((nds) => nds.concat(newNode));
     };
 
-    const deleteNode = () => {
-        if (selectedNodeId) {
-            setNodes((nds) => nds.filter((node) => node.id !== selectedNodeId));
-            setSelectedNodeId(null);
-        }
+    const handleDeleteNode = () => {
+        const updatedNodes = deleteNode(nodes, selectedNodeId);
+        setNodes(updatedNodes);
+        setSelectedNodeId(null);
     };
+
 
     return (
-        <div style={{ height: '100vh' }}>
-            <div style={{ marginBottom: '10px' }}>
-                <Input
-                    type="text"
-                    placeholder="Company Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <Input
-                    type="number"
-                    placeholder="Years of Experience"
-                    value={years}
-                    onChange={(e) => setYears(e.target.value)}
-                />
-                <Input
-                    type="number"
-                    placeholder="Number of Employees"
-                    value={employees}
-                    onChange={(e) => setEmployees(e.target.value)}
-                />
-                <Button color={'primary'} onClick={addNode}>Add Company</Button>
-
-                <div>
-                    <Button  onClick={deleteNode} disabled={!selectedNodeId}>Delete Selected Company</Button>
+        <div className={'h-screen p-4 '}>
+            <div className={'w-full bg-[#99AABB]'}>
+                <div className={'w-96 h-72 p-8'}>
+                    <div><Button onPress={onOpen} color={'primary'}>Add Company</Button></div>
+                    <div>
+                        <Button color={'danger'} onClick={handleDeleteNode}
+                                isDisabled={!isNodeSelected(selectedNodeId)}>Delete Selected Company</Button>
+                    </div>
                 </div>
+
             </div>
 
             <ReactFlow
@@ -123,9 +105,13 @@ export default function Diagram() {
                     setSelectedNodeId(node.id);
                 }}
             >
-                <Controls />
-                <Background color="#aaa" gap={16} />
+                <Controls/>
+                <Background color="#99AABB" gap={16}/>
             </ReactFlow>
+            <AddModal isOpen={isOpen} onOpenChange={onOpenChange} Add={(items) => handleAddCompany(items)}>
+                <></>
+            </AddModal>
+
         </div>
     );
 }
