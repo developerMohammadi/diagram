@@ -44,7 +44,7 @@ const AddModal=({Add,...props}:OpenModalProps) =>{
                                 <Button color="danger" variant="light" onPress={onClose}>
                                     Close
                                 </Button>
-                                <Button color="primary"
+                                <Button isDisabled={!(card?.name&&card.years&&card.employees)} color="primary"
                                         onClick={()=>{
                                             if (card) Add(card)
                                             onClose()
@@ -52,7 +52,7 @@ const AddModal=({Add,...props}:OpenModalProps) =>{
                                         }}
 
                                 >
-                                    Action
+                                    Add
                                 </Button>
                             </ModalFooter>
                         </>

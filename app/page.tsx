@@ -1,5 +1,6 @@
 'use client'
 import { useCallback, useState } from 'react';
+
 import ReactFlow, {
     addEdge,
     Background,
@@ -10,10 +11,12 @@ import ReactFlow, {
     useEdgesState,
     useNodesState,
 } from 'react-flow-renderer';
+
 import {Button, useDisclosure} from "@nextui-org/react";
+
 import { deleteNode, isNodeSelected } from '@/app/nodeDelete.service';
 import { initialCompanyData } from "@/app/data";
-import AddModal from "./add.modal";
+import AddModal from "@/app/add.modal";
 
 const initialEdges: Edge[] = [
     { id: 'e1-2', source: '1', target: '2', type: 'smoothstep', style: { strokeDasharray: '5,5' } },
@@ -26,7 +29,7 @@ export interface CardProps {
     employees?: string;
 }
 
-export default function Diagram() {
+export default function Home() {
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
@@ -45,10 +48,8 @@ export default function Diagram() {
         },
         position: { x: 150 * (index + 1), y: 150 * (index % 2 === 0 ? 1 : 2) },
     })));
-
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-    // const [isModalOpen, setIsModalOpen] = useState(false);
 
     const onConnect = useCallback(
         (params: Edge | Connection) => setEdges((eds) => addEdge({ ...params, type: 'bezier' }, eds)),
@@ -73,7 +74,6 @@ export default function Diagram() {
 
         setNodes((nds) => nds.concat(newNode));
     };
-
     const handleDeleteNode = () => {
         const updatedNodes = deleteNode(nodes, selectedNodeId);
         setNodes(updatedNodes);
@@ -82,7 +82,8 @@ export default function Diagram() {
 
 
     return (
-        <div className={'h-screen p-4 '}>
+        <div className={'h-screen p-4'}>
+
             <div className={'w-full bg-[#99AABB]'}>
                 <div className={'w-96 h-72 p-8'}>
                     <div><Button onPress={onOpen} color={'primary'}>Add Company</Button></div>
@@ -108,6 +109,7 @@ export default function Diagram() {
                 <Controls/>
                 <Background color="#99AABB" gap={16}/>
             </ReactFlow>
+
             <AddModal isOpen={isOpen} onOpenChange={onOpenChange} Add={(items) => handleAddCompany(items)}>
                 <></>
             </AddModal>
